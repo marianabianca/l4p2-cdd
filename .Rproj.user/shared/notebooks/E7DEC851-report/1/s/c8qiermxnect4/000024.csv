@@ -1,0 +1,3 @@
+"0","modelo1 = lm(winpercent ~ sugarpercent + pricepercent + chocolate + hard,"
+"0","             data = data)"
+"0","tidy(modelo1)"

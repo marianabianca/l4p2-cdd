@@ -1,0 +1,3 @@
+"0","data %>%"
+"0","  ggplot(aes(y = winpercent, x = hard)) +"
+"0","  geom_quasirandom()"

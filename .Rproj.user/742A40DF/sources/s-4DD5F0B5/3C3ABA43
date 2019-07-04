@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1562199834321.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3408324342",
+    "id" : "3C3ABA43",
+    "lastKnownWriteTime" : 1562208011,
+    "last_content_update" : 1562208011813,
+    "path" : "~/UFCG/7-periodo/CDD/l4p2/reports/report.Rmd",
+    "project_path" : "reports/report.Rmd",
+    "properties" : {
+        "cursorPosition" : "49,56",
+        "last_setup_crc32" : "4DD5F0B5dfe0ac04",
+        "scrollLine" : "46",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

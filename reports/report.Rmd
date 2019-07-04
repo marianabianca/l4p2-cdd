@@ -1,0 +1,58 @@
+---
+title: "Felicidade mundial"
+author: "Mariana Marques dos Santos Dela Bianca"
+output:
+    html_document:
+    df_print: paged
+theme: sandstone
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(here)
+library(broom)
+library(ggbeeswarm)
+theme_set(theme_bw())
+```
+
+# Introdução
+
+
+
+```{r cars}
+data = read.csv(here::here("data/candy-data.csv"))
+```
+
+```{r}
+data %>%
+  ggplot(aes(y = winpercent, x = sugarpercent)) +
+  geom_point()
+
+data %>%
+  ggplot(aes(y = winpercent, x = pricepercent)) +
+  geom_point()
+
+data %>%
+  ggplot(aes(y = winpercent, x = chocolate)) +
+  geom_quasirandom()
+
+data %>%
+  ggplot(aes(y = winpercent, x = bar)) +
+  geom_quasirandom()
+
+data %>%
+  ggplot(aes(y = winpercent, x = hard)) +
+  geom_quasirandom()
+```
+
+```{r}
+
+modelo1 = lm(winpercent ~ sugarpercent + pricepercent + chocolate + hard,
+             data = data)
+
+tidy(modelo1)
+glance(modelo1)
+
+```
+
+
