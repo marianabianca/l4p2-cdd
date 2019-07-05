@@ -1,5 +1,5 @@
 ---
-title: "Felicidade mundial"
+title: "Doces de halloween"
 author: "Mariana Marques dos Santos Dela Bianca"
 output:
     html_document:
@@ -12,12 +12,14 @@ library(tidyverse)
 library(here)
 library(broom)
 library(ggbeeswarm)
+library(modelr)
 theme_set(theme_bw())
 ```
 
 # Introdução
 
-
+[candy-power-ranking fonte](https://data.fivethirtyeight.com/)
+[sobre os dados](https://fivethirtyeight.com/features/the-ultimate-halloween-candy-power-ranking/)
 
 ```{r cars}
 data = read.csv(here::here("data/candy-data.csv"))
@@ -47,7 +49,7 @@ data %>%
 
 ```{r}
 
-modelo1 = lm(winpercent ~ sugarpercent + pricepercent + chocolate + hard,
+modelo1 = lm(winpercent ~ sugarpercent + pricepercent + chocolate,
              data = data)
 
 tidy(modelo1)
@@ -55,4 +57,32 @@ glance(modelo1)
 
 ```
 
+```{r}
+plotar_modelo_sugar = data %>% 
+  data_grid(sugarpercent = seq_range(sugarpercent, 10),
+            pricepercent = mean(pricepercent),
+            chocolate = c(1, 0)) %>% 
+  add_predictions(modelo1)
 
+glimpse(plotar_modelo_sugar)
+
+ggplot(data = data, aes(x = sugarpercent)) + 
+  geom_point(aes(y = winpercent)) + 
+  geom_line(data = plotar_modelo_sugar, aes(y = pred), color = "orange", size = 1.5) +
+  facet_wrap(~chocolate)
+```
+
+```{r}
+plotar_modelo_price = data %>% 
+  data_grid(sugarpercent = mean(sugarpercent),
+            pricepercent = seq_range(pricepercent, 10),
+            chocolate = c(1, 0)) %>% 
+  add_predictions(modelo1)
+
+glimpse(plotar_modelo_price)
+
+ggplot(data = data, aes(x = pricepercent)) + 
+  geom_point(aes(y = winpercent)) + 
+  geom_line(data = plotar_modelo_price, aes(y = pred), color = "orange", size = 1.5) +
+  facet_wrap(~chocolate)
+```
