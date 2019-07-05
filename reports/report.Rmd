@@ -4,7 +4,7 @@ author: "Mariana Marques dos Santos Dela Bianca"
 output:
     html_document:
     df_print: paged
-theme: sandstone
+theme: flatly
 ---
 
 ```{r setup, include=FALSE}
@@ -13,17 +13,24 @@ library(here)
 library(broom)
 library(ggbeeswarm)
 library(modelr)
+library(DT)
 theme_set(theme_bw())
 ```
 
 # Introdução
 
-[candy-power-ranking fonte](https://data.fivethirtyeight.com/)
-[sobre os dados](https://fivethirtyeight.com/features/the-ultimate-halloween-candy-power-ranking/)
+Esse relatório é sobre o último lab do período da disciplina de Ciência de Dados Descritiva. Foi proposto pelo professor que escolhêssemos a base de dados que gostaríamos de utilizar, então depois de dedicar um bom tempo pesquisando algo divertido e interessante encontrei algo que achasse legal: [Ranking de doces de Halloween](https://data.fivethirtyeight.com/)! Esses dados foram gerados a partir de uma pesquisa online sobre qual doce dentre os disponíveis (na pesquisa) a pessoa preferia. Você pode encontrar mais informações sobre essa pesquisa aqui: [The Ultimate Halloween Candy Power Ranking](https://fivethirtyeight.com/features/the-ultimate-halloween-candy-power-ranking/).
+
+### Dados
 
 ```{r cars}
 data = read.csv(here::here("data/candy-data.csv"))
+
+datatable(data %>% select(competitorname, chocolate, sugarpercent, pricepercent))
 ```
+
+As variáveis que escolhi para realizar a regressão foram a quantidade de açúcar (sugarpercent), o preço (pricepercent) e se o doce era de chocolate ou não (chocolate).
+A seguir podemos visualizar a distribuição de cada variável juntamente com a chance do doce ganhar a pesquisa:
 
 ```{r}
 data %>%
@@ -38,24 +45,23 @@ data %>%
   ggplot(aes(y = winpercent, x = chocolate)) +
   geom_quasirandom()
 
-data %>%
-  ggplot(aes(y = winpercent, x = bar)) +
-  geom_quasirandom()
-
-data %>%
-  ggplot(aes(y = winpercent, x = hard)) +
-  geom_quasirandom()
 ```
 
-```{r}
+Como é possível perceber, as variáveis *açúcar* e *preço* se comportam de forma linear, não precisando realizar nenhuma transformação para utilizaá-las no modelo de regressão linear a seguir.
 
+***
+
+# Modelo da regressão linear
+
+```{r}
 modelo1 = lm(winpercent ~ sugarpercent + pricepercent + chocolate,
              data = data)
 
 tidy(modelo1)
 glance(modelo1)
-
 ```
+
+## Porcentagem de açúcar
 
 ```{r}
 plotar_modelo_sugar = data %>% 
@@ -72,6 +78,10 @@ ggplot(data = data, aes(x = sugarpercent)) +
   facet_wrap(~chocolate)
 ```
 
+Podemos considerar, observando a linha de regressão, que quanto mais açúcar o doce contiver mais chance de sucesso no halloween ele terá. Mas não podemos esquecer que os dados estão bem dispersos e o resultado provavelmente não estará dentro dos padrões da linha de regressão.
+
+## Porcentagem do preço
+
 ```{r}
 plotar_modelo_price = data %>% 
   data_grid(sugarpercent = mean(sugarpercent),
@@ -86,3 +96,12 @@ ggplot(data = data, aes(x = pricepercent)) +
   geom_line(data = plotar_modelo_price, aes(y = pred), color = "orange", size = 1.5) +
   facet_wrap(~chocolate)
 ```
+
+Observando os gráficos sobre o preço é possível perceber que quando maior o preço menor a chance do doce fazer sucesso, pois a linha de regressão está aparentemente com uma inclinação negativa. Mas da mesma forma que os gráficos da porcentagem de açúcar mostram, os gráficos sobre o preço dos doces contém pontos muito dispersos, indicando que o resultado provavelmente não está muito próximo da linha de regressão.
+
+## Sobre a fórmula da regressão
+
+O formato da fórmula da regressão que fizemos é: winpercent = 38.62 + (9.03).(sugarpercent) + (-1.66).pricepercent + (18.72).(chocolate)
+Chocolate é uma variável categórica, portanto se o doce for de chocolate a porcentagem de ganho aumenta em 18.72%.
+
+O modelo explica 41,16% da variância da variável da resposta (R2 = 0,43), o que é um resultado considerável, levando em consideração que usando apenas essas três variáveis (açúcar, preço e chocolate) no modelo e ele explica quase metade da variância da variável da resposta. 
